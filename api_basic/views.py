@@ -1,12 +1,39 @@
-from rest_framework import status
+from django.http import HttpResponse
+from rest_framework import status, generics, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from django.http import HttpResponse
 
 
 from .models import Article
 from .serializers import ArticleSerializer
+
+
+# Generic view and mixins
+class GenericApiView(
+    generics.GenericAPIView,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    lookup_field = "pk"
+
+    def get(self, request, pk=None):
+        if pk:
+            return self.retrieve(request)
+        else:
+            return self.list(request)
+
+    def put(self, request, pk=None):
+        return self.update(request, pk)
+
+    def delete(self, request, pk=None):
+        return self.destroy(request, pk)
+
 
 # Class base views
 class ArticleApiView(APIView):
@@ -38,12 +65,11 @@ class ArticleDetails(APIView):
             return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self, request, pk):
         article = self.get_object(pk=pk)
         article.delete()
         return Response(status.HTTP_204_NO_CONTENT)
-
 
 
 # Funciton base vuew
