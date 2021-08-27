@@ -9,10 +9,34 @@ from rest_framework.authentication import (
     TokenAuthentication,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ViewSet
+
+from django.shortcuts import get_object_or_404
 
 
 from .models import Article
 from .serializers import ArticleSerializer
+
+
+class GenericViewSet(ViewSet):
+    def list(self, request):
+        qs = Article.objects.all()
+        serializer = ArticleSerializer(qs, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk):
+        qs = Article.objects.all()
+        article = get_object_or_404(qs, pk)
+        serializer = ArticleSerializer(data=request.data)
+        return Response(serializer.data)
 
 
 # Generic view and mixins
