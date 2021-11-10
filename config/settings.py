@@ -40,13 +40,13 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-RPOJECT_APPS = []
+PROJECT_APPS = ["api"]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 
-INSTALLED_APPS = THIRD_PARTY_APPS + DJANGO_APPS + RPOJECT_APPS
+INSTALLED_APPS = THIRD_PARTY_APPS + DJANGO_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
