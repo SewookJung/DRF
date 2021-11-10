@@ -1,3 +1,5 @@
 my_config.py
 .vscode
 db.sqlite3
+
+__pycache__
